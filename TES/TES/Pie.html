@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+</head>
+
+<body>
+    <div id="canvas-holder" style="width:40%">
+        <canvas id="chart-area"></canvas>
+    </div>
+
+    <!--Dynamically update list of students by inserting HTML elements with Class student, data-name attribute, and data-time attribute-->
+    <div id="a-sync">
+        <p class="student" data-name="Bryan" data-time="50"></p>
+        <p class="student" data-name="Andrew" data-time="30"></p>
+        <p class="student" data-name="Steve" data-time="70"></p>
+    </div>
+
+    <script>
+		object = {
+			type: 'pie',
+			data: {
+				datasets: [{
+					data: [
+					],
+					backgroundColor: [
+					],
+					label: ''
+				}],
+				labels: [
+				]
+			},
+			options: {
+				responsive: true
+			}
+		};
+
+		function colorNumber(){
+			return Math.floor(Math.random()*Math.floor(255));
+		}
+
+		function randomColor() {
+			var color = 'rgb(';
+			color += colorNumber()+", "+colorNumber()+", "+colorNumber();
+			return color;
+		}
+
+		function addData(label, data) {
+			myPie.data.labels.push(label);
+			myPie.data.datasets.forEach((dataset) => {
+				dataset.data.push(data);
+				dataset.backgroundColor.push(randomColor())
+			});
+			myPie.update();
+		}
+
+		window.onload = function() {
+			var ctx = document.getElementById('chart-area').getContext('2d');
+			window.myPie = new Chart(ctx, object);
+			var student = document.querySelectorAll(".student");
+
+			for (i = 0; i < student.length; i++) {
+				var name = student[i].getAttribute('data-name');
+				var time = student[i].getAttribute('data-time');
+				addData(name,time);
+			}
+
+			/*student.forEach(function(){
+				var name = document.getElementById(student);
+				addData(name.dataset.data-name,name.dataset.data-time);
+			});*/
+		};
+
+    </script>
+</body>
+</html>

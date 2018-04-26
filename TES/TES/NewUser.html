@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/core.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/hmac.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/sha256.js"></script>
+<html>
+<head>
+    <script src="Scripts/jquery-1.10.2.min.js"></script>
+    <script src="Scripts/jquery.signalR-2.2.3.min.js"></script>
+    <script src="signalr/hubs" type="text/javascript"></script>
+    <script language="JavaScript" type="text/javascript">
+        $(function SubmitButton() {
+
+            var tesHubConnection = $.connection.tesHub;
+
+            $.connection.hub.start()
+                .done(function () {
+
+                    $('#Submit').click(function () {
+                        var password = "";
+                        if ($.trim($('#password').val()) != '') {
+                            password = CryptoJS.SHA256($('#password').val()).toString(CryptoJS.enc.Base64);
+                            document.getElementById("password").value = password;
+                        }
+                        tesHubConnection.server.sendNewUser($('#firstName').val(), $('#lastName').val(), $('#email').val(), password);
+                        
+                    });
+                });
+
+            tesHubConnection.client.sendAlert = function (value) {
+                window.alert(value);
+            }
+
+            tesHubConnection.client.submitForm = function (value) {
+                $('#LoginForm').submit();
+            }
+
+        });
+    </script>
+
+    <meta charset="utf-8" />
+    <title>TES</title>
+    <style>
+        .textBox {
+            font-size: 36px;
+            height: 45px;
+            width: 100%;
+            clear: both;
+        }
+
+        .text {
+            font-size: 36px;
+            text-align: center;
+        }
+
+        form {
+            display: inline-block;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: left;
+        }
+
+        .formDiv {
+            margin: auto;
+            width: 50%;
+            display: block;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .submitButton {
+            height: 36px;
+            font-size: 24px;
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="formDiv">
+        <h2 class="text">Time Entry System</h2>
+        <h1>New User Form</h1>
+        <form action="UnassignedUser.aspx" method="GET" id="LoginForm" name="LoginForm">
+            <label class="text">First Name: </label>
+            <input class="textBox" id="firstName" type="text" name="firstName" value="" required>
+            <br />
+            <br />
+            <label class="text">Last Name:  </label>
+            <input class="textBox" id="lastName" type="text" name="lastName" value="" required>
+            <br />
+            <br />
+            <label class="text">Email: </label>
+            <input class="textBox" id="email" type="text" name="email" value="" required>
+            <br />
+            <br />
+            <label class="text">Password:  </label>
+            <input class="textBox" type="password" id="password" name="password" value="" required>
+            <br />
+            <br />
+            <input class="submitButton" TYPE="button" NAME="button" Value="Submit" id="Submit"/>
+            <br />
+        </form>
+        <br />
+    </div>
+</body>
+</html>
